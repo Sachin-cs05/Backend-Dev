@@ -1,0 +1,27 @@
+app.log:error: invalid input
+error.log:ERROR: Database failed
+error.log:Line 1 - error occurred
+error.log:Line 2 - error occurred
+error.log:Line 3 - error occurred
+error.log:Line 4 - error occurred
+error.log:Line 5 - error occurred
+error.log:Line 6 - error occurred
+error.log:Line 7 - error occurred
+error.log:Line 8 - error occurred
+error.log:Line 9 - error occurred
+error.log:Line 10 - error occurred
+error.log:Line 11 - error occurred
+error.log:Line 12 - error occurred
+error.log:Line 13 - error occurred
+error.log:Line 14 - error occurred
+error.log:Line 15 - error occurred
+error.log:Line 16 - error occurred
+error.log:Line 17 - error occurred
+error.log:Line 18 - error occurred
+error.log:Line 19 - error occurred
+error.log:Line 20 - error occurred
+error.log:Line 21 - error occurred
+error.log:Line 22 - error occurred
+error.log:Line 23 - error occurred
+error.log:Line 24 - error occurred
+error.log:Line 25 - error occurred

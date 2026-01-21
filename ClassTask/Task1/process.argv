@@ -1,0 +1,6 @@
+[
+  'node',
+  'fileManager.js',
+  'read',
+  'demo.txt'
+]

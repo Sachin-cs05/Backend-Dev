@@ -1,0 +1,4 @@
+echo INFO Server started >> server.log
+echo WARNING Disk usage high >> server.log
+echo ERROR Database connection failed >> server.log
+echo INFO User logged in >> server.log

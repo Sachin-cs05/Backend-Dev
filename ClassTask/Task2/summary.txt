@@ -1,0 +1,7 @@
+
+    log file report
+    ----------------------------
+    Toatl line : 4,
+    Total error : 1,
+    warning count : 1,
+    Info count : 2

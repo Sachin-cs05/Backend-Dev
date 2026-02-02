@@ -1,0 +1,35 @@
+[2/2/2026, 10:54:55 am] ========== BACKUP & CLEANUP STARTED ==========
+[2/2/2026, 10:54:55 am] 📁 Creating backup folder: ./backups
+[2/2/2026, 10:54:55 am] 📂 Timestamped backup folder created: backups\2026-02-02_05-24-55
+[2/2/2026, 10:54:55 am] 📋 Found 2 items in source folder
+[2/2/2026, 10:54:55 am] ✅ Backed up: document.txt
+[2/2/2026, 10:54:55 am] ✅ Backed up: photo.jpg
+[2/2/2026, 10:54:55 am] 
+[2/2/2026, 10:54:55 am] ========== SUMMARY ==========
+[2/2/2026, 10:54:55 am] ✅ Files backed up: 2
+[2/2/2026, 10:54:55 am] 🗑️  Files deleted: 0
+[2/2/2026, 10:54:55 am] 📂 Backup location: backups\2026-02-02_05-24-55
+[2/2/2026, 10:54:55 am] ========== BACKUP & CLEANUP FINISHED ==========
+[2/2/2026, 10:54:55 am] 
+2/2/2026, 11:01:36 am - Created directory: d:\Sachin Drive\Backend-Dev\ClassTask\Task3\backup
+2/2/2026, 11:01:36 am - Backed up file: document.txt
+2/2/2026, 11:01:36 am - Backed up file: photo.jpg
+2/2/2026, 11:01:36 am - Backup & cleanup completed successfully.
+
+2/2/2026, 11:02:31 am - Backed up file: document.txt
+2/2/2026, 11:02:31 am - Backed up file: photo.jpg
+2/2/2026, 11:02:31 am - Backup & cleanup completed successfully.
+
+2/2/2026, 11:02:47 am - Backed up file: document.txt
+2/2/2026, 11:02:47 am - Backed up file: photo.jpg
+2/2/2026, 11:02:47 am - Backup & cleanup completed successfully.
+
+2/2/2026, 11:02:49 am - Backed up file: document.txt
+2/2/2026, 11:02:49 am - Backed up file: photo.jpg
+2/2/2026, 11:02:49 am - Backup & cleanup completed successfully.
+
+2/2/2026, 11:03:35 am - Created directory: d:\Sachin Drive\Backend-Dev\ClassTask\Task3\backup
+2/2/2026, 11:03:35 am - Backed up file: document.txt
+2/2/2026, 11:03:35 am - Backed up file: photo.jpg
+2/2/2026, 11:03:35 am - Backup & cleanup completed successfully.
+

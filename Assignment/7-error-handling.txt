@@ -1,0 +1,2 @@
+Error handling is important because without handling errors the program may crash.
+It can also lead to data loss or application failure.

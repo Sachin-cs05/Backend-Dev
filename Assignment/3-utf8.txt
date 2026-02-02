@@ -1,0 +1,2 @@
+The utf8 encoding is used to convert file data into readable text.
+If utf8 is not used, the data may be returned in buffer format.

@@ -1,0 +1,4 @@
+ENOENT: File or folder does not exist
+EACCES: Permission denied
+EISDIR: A directory was found instead of a file
+ENOTDIR: A file was found instead of a directory

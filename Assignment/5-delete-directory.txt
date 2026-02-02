@@ -1,0 +1,2 @@
+To safely delete a directory, fs.rm() is used with the recursive option.
+The recursive option also deletes all files inside the folder.

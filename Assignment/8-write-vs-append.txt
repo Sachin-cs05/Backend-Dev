@@ -1,0 +1,3 @@
+writeFile overwrites the entire file content.
+appendFile adds new data at the end of the file.
+appendFile does not delete existing data.

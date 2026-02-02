@@ -1,0 +1,5 @@
+Synchronous file operation:
+The program stops until the file task is completed.
+
+Asynchronous file operation:
+The file task runs in the background and the program continues executing.

@@ -1,0 +1,3 @@
+Piping means sending data from one stream directly to another stream.
+Example: readStream.pipe(writeStream)
+This makes file copying or transferring easy.

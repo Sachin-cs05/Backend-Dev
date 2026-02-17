@@ -1,0 +1,18 @@
+﻿<%- include('partials/header') %>
+
+<h2>Add Student</h2>
+
+<form action="/add-student" method="POST">
+  <label for="name">Name</label>
+  <input id="name" name="name" type="text" required />
+
+  <label for="marks">Marks</label>
+  <input id="marks" name="marks" type="number" required />
+
+  <label for="grade">Grade</label>
+  <input id="grade" name="grade" type="text" required />
+
+  <button type="submit">Add Student</button>
+</form>
+
+<%- include('partials/footer') %>

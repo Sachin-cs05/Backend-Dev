@@ -1,20 +1,15 @@
-// Problem 5: Create a photo gallery using static files and EJS to display images dynamically
-
 const express = require('express');
 const app = express();
 const path = require('path');
-const fs = require('fs');
 
-// Set view engine to EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Serve static files (images)
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Sample gallery data
+// hardcoded gallery data, abhi file/db se nahi
 const galleries = [
   {
     id: 1,
@@ -48,76 +43,101 @@ const galleries = [
   }
 ];
 
-// Route: Display all galleries
-app.get('/', (req, res) => {
+app.get('/', function (req, res) {
   res.render('gallery_home', {
     title: 'Photo Gallery',
     galleries: galleries
   });
 });
 
-// Route: Display specific gallery
-app.get('/gallery/:id', (req, res) => {
-  const gallery = galleries.find(g => g.id === parseInt(req.params.id));
-  
-  if (!gallery) {
+app.get('/gallery/:id', function (req, res) {
+  const galleryId = parseInt(req.params.id);
+  let foundGallery = null;
+
+  for (let i = 0; i < galleries.length; i++) {
+    if (galleries[i].id === galleryId) {
+      foundGallery = galleries[i];
+      break;
+    }
+  }
+
+  if (!foundGallery) {
     return res.status(404).render('gallery_404', {
       title: 'Gallery Not Found'
     });
   }
-  
+
   res.render('gallery_view', {
-    title: `${gallery.name} Gallery`,
-    gallery: gallery,
+    title: foundGallery.name + ' Gallery',
+    gallery: foundGallery,
     allGalleries: galleries
   });
 });
 
-// Route: View single image
-app.get('/gallery/:galleryId/image/:imageId', (req, res) => {
-  const gallery = galleries.find(g => g.id === parseInt(req.params.galleryId));
-  
-  if (!gallery) {
+app.get('/gallery/:galleryId/image/:imageId', function (req, res) {
+  const galleryId = parseInt(req.params.galleryId);
+  const imageId = parseInt(req.params.imageId);
+
+  let foundGallery = null;
+  for (let i = 0; i < galleries.length; i++) {
+    if (galleries[i].id === galleryId) {
+      foundGallery = galleries[i];
+      break;
+    }
+  }
+
+  if (!foundGallery) {
     return res.status(404).json({ error: 'Gallery not found' });
   }
-  
-  const image = gallery.images.find(img => img.id === parseInt(req.params.imageId));
-  
-  if (!image) {
+
+  let foundImage = null;
+  for (let j = 0; j < foundGallery.images.length; j++) {
+    if (foundGallery.images[j].id === imageId) {
+      foundImage = foundGallery.images[j];
+      break;
+    }
+  }
+
+  if (!foundImage) {
     return res.status(404).json({ error: 'Image not found' });
   }
-  
+
   res.render('image_detail', {
-    title: image.title,
-    gallery: gallery,
-    image: image,
+    title: foundImage.title,
+    gallery: foundGallery,
+    image: foundImage,
     allGalleries: galleries
   });
 });
 
-// Route: Gallery API (for AJAX)
-app.get('/api/galleries', (req, res) => {
+app.get('/api/galleries', function (req, res) {
   res.json(galleries);
 });
 
-app.get('/api/galleries/:id', (req, res) => {
-  const gallery = galleries.find(g => g.id === parseInt(req.params.id));
-  
-  if (!gallery) {
+app.get('/api/galleries/:id', function (req, res) {
+  const galleryId = parseInt(req.params.id);
+  let foundGallery = null;
+
+  for (let i = 0; i < galleries.length; i++) {
+    if (galleries[i].id === galleryId) {
+      foundGallery = galleries[i];
+      break;
+    }
+  }
+
+  if (!foundGallery) {
     return res.status(404).json({ error: 'Gallery not found' });
   }
-  
-  res.json(gallery);
+
+  res.json(foundGallery);
 });
 
-// Start server
 const PORT = 3004;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Gallery Home: http://localhost:${PORT}/`);
-  console.log(`View Gallery 1: http://localhost:${PORT}/gallery/1`);
-  console.log(`\nNote: Create an 'images' folder in the 'public' directory and add your images there.`);
-  console.log(`Supported image formats: .jpg, .png, .gif, .webp`);
+app.listen(PORT, function () {
+  console.log('Server running on http://localhost:' + PORT);
+  console.log('Gallery Home: http://localhost:' + PORT + '/');
+  console.log('View Gallery 1: http://localhost:' + PORT + '/gallery/1');
+  console.log('Note: public/images folder me images daalna');
 });
 
 module.exports = app;

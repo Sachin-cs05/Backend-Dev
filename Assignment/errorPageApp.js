@@ -1,39 +1,34 @@
-// Problem 4: Set up a custom 404 error page using EJS templates
-
 const express = require('express');
 const app = express();
 const path = require('path');
 
-// Set view engine to EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Sample routes
-app.get('/', (req, res) => {
+// normal test routes
+app.get('/', function (req, res) {
   res.render('home', {
     title: 'Home Page',
     message: 'Welcome to our website!'
   });
 });
 
-app.get('/about', (req, res) => {
+app.get('/about', function (req, res) {
   res.render('about', {
     title: 'About Us'
   });
 });
 
-app.get('/blog', (req, res) => {
+app.get('/blog', function (req, res) {
   res.render('blog', {
     title: 'Blog Posts'
   });
 });
 
-// Custom error handling middleware for 404
-app.use((req, res) => {
-  // Pass the requested URL to the error page
+// koi route match nahi hua to ye page dikhao
+app.use(function (req, res) {
   res.status(404).render('error_404', {
     title: '404 - Page Not Found',
     requestedUrl: req.originalUrl,
@@ -41,8 +36,8 @@ app.use((req, res) => {
   });
 });
 
-// Error handling middleware for 500
-app.use((err, req, res, next) => {
+// error aya to yaha aa jayega
+app.use(function (err, req, res, next) {
   console.error('Error:', err);
   res.status(500).render('error_500', {
     title: '500 - Server Error',
@@ -50,11 +45,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
 const PORT = 3003;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Try: http://localhost:${PORT}/nonexistent`);
+app.listen(PORT, function () {
+  console.log('Server running on http://localhost:' + PORT);
+  console.log('Try: http://localhost:' + PORT + '/nonexistent');
 });
 
 module.exports = app;

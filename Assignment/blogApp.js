@@ -1,19 +1,15 @@
-// Problem 6: Build a simple blog with routes for listing posts, viewing individual posts, and creating new posts
-
 const express = require('express');
 const app = express();
 const path = require('path');
 
-// Set view engine to EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Sample blog posts data (in-memory)
+// sample post list, abhi memory me hai simple
 let posts = [
   {
     id: 1,
@@ -47,221 +43,318 @@ let posts = [
   }
 ];
 
-// Route: Homepage - Display all blog posts
-app.get('/', (req, res) => {
-  const sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
+app.get('/', function (req, res) {
+  // copy banaya so original array ka order direct touch na ho
+  const sortedPosts = posts.slice();
+
+  sortedPosts.sort(function (a, b) {
+    return new Date(b.date) - new Date(a.date);
+  });
+
+  let totalViews = 0;
+  for (let i = 0; i < posts.length; i++) {
+    totalViews = totalViews + posts[i].views;
+  }
+
   res.render('blog_home', {
     title: 'My Awesome Blog',
     posts: sortedPosts,
     totalPosts: posts.length,
-    totalViews: posts.reduce((sum, post) => sum + post.views, 0)
+    totalViews: totalViews
   });
 });
 
-// Route: View individual post
-app.get('/post/:id', (req, res) => {
-  const post = posts.find(p => p.id === parseInt(req.params.id));
-  
-  if (!post) {
+app.get('/post/:id', function (req, res) {
+  const postId = parseInt(req.params.id);
+  let foundPost = null;
+
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].id === postId) {
+      foundPost = posts[i];
+      break;
+    }
+  }
+
+  if (!foundPost) {
     return res.status(404).render('post_not_found', {
       title: '404 - Post Not Found'
     });
   }
-  
-  // Increment view count
-  post.views++;
-  
-  // Get related posts (same tags)
-  const relatedPosts = posts
-    .filter(p => p.id !== post.id && p.tags.some(tag => post.tags.includes(tag)))
-    .slice(0, 3);
-  
+
+  foundPost.views = foundPost.views + 1;
+
+  // related ka basic logic, same tag ho to le lo
+  const relatedPosts = [];
+  for (let i = 0; i < posts.length; i++) {
+    const onePost = posts[i];
+
+    if (onePost.id === foundPost.id) {
+      continue;
+    }
+
+    let sameTag = false;
+    for (let j = 0; j < onePost.tags.length; j++) {
+      if (foundPost.tags.includes(onePost.tags[j])) {
+        sameTag = true;
+        break;
+      }
+    }
+
+    if (sameTag) {
+      relatedPosts.push(onePost);
+    }
+
+    if (relatedPosts.length === 3) {
+      break;
+    }
+  }
+
   res.render('post_single', {
-    title: post.title,
-    post: post,
+    title: foundPost.title,
+    post: foundPost,
     relatedPosts: relatedPosts
   });
 });
 
-// Route: Create new post - Display form
-app.get('/create', (req, res) => {
+app.get('/create', function (req, res) {
   res.render('post_create', {
     title: 'Create New Post'
   });
 });
 
-// Route: Handle form submission - Create new post
-app.post('/create', (req, res) => {
-  const { title, author, content, excerpt, tags } = req.body;
+app.post('/create', function (req, res) {
+  const title = req.body.title;
+  const author = req.body.author;
+  const content = req.body.content;
+  const excerpt = req.body.excerpt;
+  const tags = req.body.tags;
+
   const errors = [];
 
-  // Validation
   if (!title || title.trim() === '') {
     errors.push('Title is required');
   }
-  
   if (!author || author.trim() === '') {
     errors.push('Author name is required');
   }
-  
   if (!content || content.trim() === '') {
     errors.push('Post content is required');
   }
-  
   if (!excerpt || excerpt.trim() === '') {
     errors.push('Excerpt is required');
   }
 
-  // If there are errors, re-render the form with errors
   if (errors.length > 0) {
     return res.render('post_create', {
       title: 'Create New Post',
       errors: errors,
-      formData: { title, author, content, excerpt, tags }
+      formData: {
+        title: title,
+        author: author,
+        content: content,
+        excerpt: excerpt,
+        tags: tags
+      }
     });
   }
 
-  // Create new post
+  let maxId = 0;
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].id > maxId) {
+      maxId = posts[i].id;
+    }
+  }
+
+  let tagList = [];
+  if (tags && tags.trim() !== '') {
+    const rawTags = tags.split(',');
+    for (let i = 0; i < rawTags.length; i++) {
+      const oneTag = rawTags[i].trim();
+      if (oneTag !== '') {
+        tagList.push(oneTag);
+      }
+    }
+  }
+
   const newPost = {
-    id: Math.max(...posts.map(p => p.id), 0) + 1,
+    id: maxId + 1,
     title: title.trim(),
     author: author.trim(),
     date: new Date().toISOString().split('T')[0],
     content: content.trim(),
     excerpt: excerpt.trim(),
-    tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+    tags: tagList,
     views: 0
   };
 
   posts.push(newPost);
-
-  // Redirect to the new post
-  res.redirect(`/post/${newPost.id}`);
+  res.redirect('/post/' + newPost.id);
 });
 
-// Route: Edit post - Display edit form
-app.get('/edit/:id', (req, res) => {
-  const post = posts.find(p => p.id === parseInt(req.params.id));
-  
-  if (!post) {
+app.get('/edit/:id', function (req, res) {
+  const postId = parseInt(req.params.id);
+  let foundPost = null;
+
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].id === postId) {
+      foundPost = posts[i];
+      break;
+    }
+  }
+
+  if (!foundPost) {
     return res.status(404).render('post_not_found', {
       title: '404 - Post Not Found'
     });
   }
-  
+
   res.render('post_edit', {
-    title: `Edit: ${post.title}`,
-    post: post
+    title: 'Edit: ' + foundPost.title,
+    post: foundPost
   });
 });
 
-// Route: Handle post update
-app.post('/edit/:id', (req, res) => {
-  const post = posts.find(p => p.id === parseInt(req.params.id));
-  
-  if (!post) {
+app.post('/edit/:id', function (req, res) {
+  const postId = parseInt(req.params.id);
+  let foundPost = null;
+
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].id === postId) {
+      foundPost = posts[i];
+      break;
+    }
+  }
+
+  if (!foundPost) {
     return res.status(404).render('post_not_found', {
       title: '404 - Post Not Found'
     });
   }
-  
-  const { title, author, content, excerpt, tags } = req.body;
+
+  const title = req.body.title;
+  const author = req.body.author;
+  const content = req.body.content;
+  const excerpt = req.body.excerpt;
+  const tags = req.body.tags;
+
   const errors = [];
 
-  if (!title || title.trim() === '') errors.push('Title is required');
-  if (!author || author.trim() === '') errors.push('Author is required');
-  if (!content || content.trim() === '') errors.push('Content is required');
-  if (!excerpt || excerpt.trim() === '') errors.push('Excerpt is required');
+  if (!title || title.trim() === '') {
+    errors.push('Title is required');
+  }
+  if (!author || author.trim() === '') {
+    errors.push('Author is required');
+  }
+  if (!content || content.trim() === '') {
+    errors.push('Content is required');
+  }
+  if (!excerpt || excerpt.trim() === '') {
+    errors.push('Excerpt is required');
+  }
 
   if (errors.length > 0) {
     return res.render('post_edit', {
-      title: `Edit: ${post.title}`,
-      post: post,
+      title: 'Edit: ' + foundPost.title,
+      post: foundPost,
       errors: errors
     });
   }
 
-  // Update post
-  post.title = title.trim();
-  post.author = author.trim();
-  post.content = content.trim();
-  post.excerpt = excerpt.trim();
-  post.tags = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+  let tagList = [];
+  if (tags && tags.trim() !== '') {
+    const rawTags = tags.split(',');
+    for (let i = 0; i < rawTags.length; i++) {
+      const oneTag = rawTags[i].trim();
+      if (oneTag !== '') {
+        tagList.push(oneTag);
+      }
+    }
+  }
 
-  res.redirect(`/post/${post.id}`);
+  foundPost.title = title.trim();
+  foundPost.author = author.trim();
+  foundPost.content = content.trim();
+  foundPost.excerpt = excerpt.trim();
+  foundPost.tags = tagList;
+
+  res.redirect('/post/' + foundPost.id);
 });
 
-// Route: Delete post
-app.post('/delete/:id', (req, res) => {
-  const index = posts.findIndex(p => p.id === parseInt(req.params.id));
-  
-  if (index === -1) {
+app.post('/delete/:id', function (req, res) {
+  const postId = parseInt(req.params.id);
+  let removeIndex = -1;
+
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].id === postId) {
+      removeIndex = i;
+      break;
+    }
+  }
+
+  if (removeIndex === -1) {
     return res.status(404).json({ error: 'Post not found' });
   }
-  
-  posts.splice(index, 1);
+
+  posts.splice(removeIndex, 1);
   res.redirect('/');
 });
 
-// Route: API - Get all posts as JSON
-app.get('/api/posts', (req, res) => {
+app.get('/api/posts', function (req, res) {
   res.json(posts);
 });
 
-// Route: API - Get single post as JSON
-app.get('/api/posts/:id', (req, res) => {
-  const post = posts.find(p => p.id === parseInt(req.params.id));
-  
-  if (!post) {
+app.get('/api/posts/:id', function (req, res) {
+  const postId = parseInt(req.params.id);
+  let foundPost = null;
+
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].id === postId) {
+      foundPost = posts[i];
+      break;
+    }
+  }
+
+  if (!foundPost) {
     return res.status(404).json({ error: 'Post not found' });
   }
-  
-  res.json(post);
+
+  res.json(foundPost);
 });
 
-// Route: Search posts
-app.get('/search', (req, res) => {
+app.get('/search', function (req, res) {
   const query = req.query.q || '';
-  
-  const searchResults = posts.filter(post =>
-    post.title.toLowerCase().includes(query.toLowerCase()) ||
-    post.content.toLowerCase().includes(query.toLowerCase()) ||
-    post.author.toLowerCase().includes(query.toLowerCase())
-  );
-  
+  const q = String(query).toLowerCase();
+  const searchResults = [];
+
+  for (let i = 0; i < posts.length; i++) {
+    const onePost = posts[i];
+    const inTitle = onePost.title.toLowerCase().includes(q);
+    const inContent = onePost.content.toLowerCase().includes(q);
+    const inAuthor = onePost.author.toLowerCase().includes(q);
+
+    if (inTitle || inContent || inAuthor) {
+      searchResults.push(onePost);
+    }
+  }
+
   res.render('blog_search', {
-    title: `Search Results for "${query}"`,
+    title: 'Search Results for "' + query + '"',
     query: query,
     results: searchResults,
     count: searchResults.length
   });
 });
 
-// 404 handler
-app.use((req, res) => {
+app.use(function (req, res) {
   res.status(404).render('blog_404', {
     title: '404 - Page Not Found'
   });
 });
 
-// Start server
 const PORT = 3005;
-app.listen(PORT, () => {
-  console.log(`Blog server running on http://localhost:${PORT}`);
-  console.log(`
-  Available routes:
-  GET  /                  - View all posts
-  GET  /post/:id          - View single post
-  GET  /create            - Create new post form
-  POST /create            - Submit new post
-  GET  /edit/:id          - Edit post form
-  POST /edit/:id          - Update post
-  POST /delete/:id        - Delete post
-  GET  /search?q=query    - Search posts
-  GET  /api/posts         - Get all posts (JSON)
-  GET  /api/posts/:id     - Get single post (JSON)
-  `);
+app.listen(PORT, function () {
+  console.log('Blog server running on http://localhost:' + PORT);
+  console.log('Routes: /, /post/:id, /create, /edit/:id, /search, /api/posts');
 });
 
 module.exports = app;

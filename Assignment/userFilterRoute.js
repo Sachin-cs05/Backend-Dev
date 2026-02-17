@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-// Sample user data
+// ye dummy user list
 const users = [
   { id: 1, name: 'John Doe', email: 'john@example.com' },
   { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
@@ -10,11 +10,10 @@ const users = [
   { id: 5, name: 'Alice Brown', email: 'alice@example.com' }
 ];
 
-// Route to filter users by name query parameter
-app.get('/users', (req, res) => {
+// simple route, name query aya to filter karo
+app.get('/users', function (req, res) {
   const nameFilter = req.query.name;
-  
-  // If no name parameter provided, return all users
+
   if (!nameFilter) {
     return res.json({
       message: 'All users',
@@ -22,42 +21,54 @@ app.get('/users', (req, res) => {
     });
   }
 
-  // Filter users by name (case-insensitive, partial match)
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(nameFilter.toLowerCase())
-  );
+  const textToFind = String(nameFilter).toLowerCase();
+  const filteredUsers = [];
 
-  res.json({
-    message: `Users matching "${nameFilter}"`,
-    count: filteredUsers.length,
-    users: filteredUsers
-  });
-});
-
-// Alternative: Filter by exact name match
-app.get('/users/exact', (req, res) => {
-  const nameFilter = req.query.name;
-  
-  if (!nameFilter) {
-    return res.status(400).json({ error: 'Name parameter is required' });
+  for (let i = 0; i < users.length; i++) {
+    const oneUser = users[i];
+    if (oneUser.name.toLowerCase().includes(textToFind)) {
+      filteredUsers.push(oneUser);
+    }
   }
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase() === nameFilter.toLowerCase()
-  );
-
   res.json({
-    message: `Users with exact name "${nameFilter}"`,
+    message: 'Users matching "' + nameFilter + '"',
     count: filteredUsers.length,
     users: filteredUsers
   });
 });
 
-// Start server
+// exact name match wala alag route hai
+app.get('/users/exact', function (req, res) {
+  const nameFilter = req.query.name;
+
+  if (!nameFilter) {
+    return res.status(400).json({
+      error: 'Name parameter is required'
+    });
+  }
+
+  const textToFind = String(nameFilter).toLowerCase();
+  const filteredUsers = [];
+
+  for (let i = 0; i < users.length; i++) {
+    const oneUser = users[i];
+    if (oneUser.name.toLowerCase() === textToFind) {
+      filteredUsers.push(oneUser);
+    }
+  }
+
+  res.json({
+    message: 'Users with exact name "' + nameFilter + '"',
+    count: filteredUsers.length,
+    users: filteredUsers
+  });
+});
+
 const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Try: http://localhost:${PORT}/users?name=john`);
+app.listen(PORT, function () {
+  console.log('Server running on http://localhost:' + PORT);
+  console.log('Try: http://localhost:' + PORT + '/users?name=john');
 });
 
 module.exports = app;

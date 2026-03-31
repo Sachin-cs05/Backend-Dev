@@ -1,0 +1,36 @@
+const fs = require("fs");
+const path = require("path");
+
+const answer = `Question 5: Write MongoDB queries to find all students with GPA above 3.5 and enrolled in "CS101".
+
+Answer:
+If each student document looks like this:
+{
+  name: "Amit",
+  gpa: 3.8,
+  enrolledCourses: ["CS101", "MATH201"]
+}
+
+Query:
+db.students.find({
+  gpa: { $gt: 3.5 },
+  enrolledCourses: "CS101"
+});
+
+Alternative if course is stored in a single field:
+db.students.find({
+  gpa: { $gt: 3.5 },
+  course: "CS101"
+});
+
+Explanation:
+- $gt means greater than.
+- enrolledCourses: "CS101" checks whether the array contains "CS101".
+
+Conclusion:
+This query returns all students whose GPA is above 3.5 and who are enrolled in the CS101 course.`;
+
+const outputPath = path.join(__dirname, "mongodb-student-queries.txt");
+fs.writeFileSync(outputPath, answer, "utf8");
+
+console.log(`Answer saved to ${outputPath}`);

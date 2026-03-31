@@ -1,0 +1,51 @@
+5. When to Use Embedding vs Referencing in MongoDB Schema Design
+
+Embedding and referencing are two ways to model relationships in MongoDB.
+
+1. Embedding
+In embedding, related data is stored inside the same document.
+
+Example:
+{
+  name: 'Sachin',
+  address: {
+    city: 'Delhi',
+    zip: '110001'
+  }
+}
+
+Use embedding when:
+- The related data is small
+- The related data is accessed together most of the time
+- The relationship is one-to-one or one-to-few
+- You want faster reads with fewer queries
+
+Advantages:
+- Better read performance
+- Simpler queries
+- Data stays together in one document
+
+2. Referencing
+In referencing, related data is stored in separate documents and linked using ObjectId references.
+
+Example:
+{
+  name: 'Sachin',
+  department: ObjectId('...')
+}
+
+Use referencing when:
+- The related data is large
+- The relationship is one-to-many or many-to-many
+- The related data changes often
+- You want to avoid duplicating data
+- Different collections need to share the same related document
+
+Advantages:
+- Better normalization
+- Avoids duplication
+- More flexible for complex relationships
+
+Conclusion:
+- Use embedding for closely related data that is usually read together.
+- Use referencing for large, reusable, or complex relational data.

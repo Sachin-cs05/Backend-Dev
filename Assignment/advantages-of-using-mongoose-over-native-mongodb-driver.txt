@@ -1,0 +1,29 @@
+1. Advantages of Using Mongoose Over the Native MongoDB Driver
+
+Mongoose provides a higher-level abstraction on top of the native MongoDB driver, which makes development easier and more structured.
+
+Advantages:
+
+1. Schema-based structure
+Mongoose allows you to define schemas for your collections. This helps maintain a clear structure for documents, while the native MongoDB driver is schema-less by default.
+
+2. Built-in validation
+You can add validation rules such as required fields, min/max length, enums, and custom validators directly in the schema.
+
+3. Middleware support
+Mongoose supports pre and post middleware for operations like save, validate, remove, and update. This is useful for tasks like hashing passwords or logging.
+
+4. Easier relationships
+Mongoose supports population, which makes it easier to work with referenced documents between collections.
+
+5. Model-based development
+Mongoose uses models that make CRUD operations cleaner and more organized compared to writing raw collection queries with the native driver.
+
+6. Virtuals and getters/setters
+You can define virtual fields and custom getters/setters to transform data without storing extra fields in the database.
+
+7. Cleaner code and better maintainability
+Because of schemas, models, and middleware, code is usually more readable and easier to manage in large projects.
+
+Conclusion:
+Use Mongoose when you want structure, validation, maintainability, and developer-friendly features. Use the native driver when you need more low-level control or maximum performance with fewer abstractions.

@@ -1,0 +1,44 @@
+4. How to Implement Pagination in Mongoose
+
+Pagination is used to fetch data in smaller chunks instead of loading all documents at once.
+
+In Mongoose, pagination is commonly implemented using:
+- skip()
+- limit()
+
+Example:
+const page = 2;
+const limit = 5;
+const skip = (page - 1) * limit;
+
+const users = await User.find().skip(skip).limit(limit);
+
+How it works:
+- page = current page number
+- limit = number of documents per page
+- skip = number of documents to skip
+
+For page 2 with limit 5:
+- skip = (2 - 1) * 5 = 5
+- MongoDB skips first 5 documents and returns the next 5
+
+Better pagination response:
+You can also return total records and total pages.
+
+Example:
+const page = 1;
+const limit = 10;
+const skip = (page - 1) * limit;
+
+const total = await User.countDocuments();
+const users = await User.find().skip(skip).limit(limit);
+
+const result = {
+  currentPage: page,
+  totalPages: Math.ceil(total / limit),
+  totalRecords: total,
+  data: users
+};
+
+Conclusion:
+Use skip() and limit() for basic pagination. For very large datasets, cursor-based pagination is often more efficient than skip-based pagination.

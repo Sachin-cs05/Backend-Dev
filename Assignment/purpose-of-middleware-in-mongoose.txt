@@ -1,0 +1,37 @@
+3. Purpose of Middleware in Mongoose
+
+Middleware in Mongoose is used to run logic before or after certain database operations.
+
+It helps automate common tasks and keeps your code clean.
+
+Types of middleware:
+
+1. Pre middleware
+Runs before an operation.
+Example:
+- before save
+- before validate
+- before deleteOne
+
+2. Post middleware
+Runs after an operation.
+Example:
+- after save
+- after find
+
+Common use cases of middleware:
+
+1. Hashing passwords before saving a user
+2. Logging database actions
+3. Validating or modifying data before storing it
+4. Automatically updating timestamps
+5. Running cleanup logic after delete operations
+
+Example:
+userSchema.pre('save', async function (next) {
+  console.log('Before saving user');
+  next();
+});
+
+Purpose in simple words:
+Middleware acts like hooks that allow you to add custom logic around database operations without repeating the same code in many places.

@@ -1,0 +1,34 @@
+2. Difference Between findOneAndUpdate() and updateOne()
+
+Both methods are used to update documents in MongoDB, but they behave differently.
+
+findOneAndUpdate():
+- Finds a single matching document and updates it.
+- Can return the matched document.
+- Useful when you want the updated document after the operation.
+- Commonly used when you need both update and fetch in one step.
+
+Example:
+await User.findOneAndUpdate(
+  { email: 'test@example.com' },
+  { name: 'Sachin' },
+  { new: true }
+);
+
+In this case, { new: true } returns the updated document.
+
+updateOne():
+- Updates the first matching document.
+- Does not return the updated document.
+- Returns a result object containing information like matchedCount and modifiedCount.
+- Useful when you only want to update a document and do not need the document back.
+
+Example:
+await User.updateOne(
+  { email: 'test@example.com' },
+  { $set: { name: 'Sachin' } }
+);
+
+Main Difference:
+- findOneAndUpdate() returns the document (old or updated depending on options).
+- updateOne() returns the update result summary, not the document itself.

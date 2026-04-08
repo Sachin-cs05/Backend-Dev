@@ -1,0 +1,19 @@
+{
+  "name": "assignment",
+  "version": "1.0.0",
+  "description": "Middleware and Mongoose assignment exercises",
+  "main": "requestLoggingSystem.js",
+  "scripts": {
+    "start:exercise1": "node requestLoggingSystem.js",
+    "start:exercise2": "node multiFactorAuth.js",
+    "start:exercise5": "node dataSanitizationMiddleware.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2"
+  }
+}

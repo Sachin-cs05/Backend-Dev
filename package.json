@@ -1,0 +1,13 @@
+{
+  "name": "session-auth-demo",
+  "version": "1.0.0",
+  "description": "Simple Express session and cookie authentication example",
+  "main": "p.js",
+  "scripts": {
+    "start": "node p.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-session": "^1.18.2"
+  }
+}
